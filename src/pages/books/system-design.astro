@@ -1,0 +1,23 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import BookViewer from '../../components/BookViewer';
+import { chapters } from '../../data/chapters';
+---
+
+<Layout title="System Design — CS-EBooks" description="Read the System Design EBook covering core concepts.">
+  <div style="padding: 0.75rem 1rem 0;">
+
+    <!-- Breadcrumb -->
+    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 1.5rem; color: var(--text-secondary); font-size: 0.9rem;">
+      <a href="/" style="color: var(--text-secondary);">📚 Library</a>
+      <span>›</span>
+      <span style="color: var(--text-primary); font-weight: 600;">System Design</span>
+    </div>
+
+    
+
+    <!-- Book Viewer -->
+    <BookViewer client:only="react" chapters={chapters} />
+
+  </div>
+</Layout>

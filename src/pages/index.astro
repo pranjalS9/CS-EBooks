@@ -1,0 +1,228 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { chapters } from '../data/chapters';
+
+const books = [
+  {
+    slug: 'system-design',
+    title: 'System Design',
+    subtitle: 'Core Concepts & Architecture',
+    description: 'From Load Balancers to CAP theorem — a deep-dive into the building blocks of scalable systems.',
+    chapters: chapters.length,
+    gradient: 'linear-gradient(135deg, #1e3a8a 0%, #4c1d95 100%)',
+    accent: '#3b82f6',
+    emoji: '🏗️',
+    status: 'active',
+  },
+  {
+    slug: null,
+    title: 'Data Structures',
+    subtitle: 'Algorithms & Complexity',
+    description: 'Graphs, trees, heaps and the algorithmic thinking needed to ace any technical interview.',
+    chapters: 0,
+    gradient: 'linear-gradient(135deg, #064e3b 0%, #065f46 100%)',
+    accent: '#10b981',
+    emoji: '🌳',
+    status: 'coming-soon',
+  }
+];
+---
+
+<Layout title="My Library — EBook Collection" description="A collection of ebooks on System Design, Algorithms, and more.">
+  <div style="padding: 2rem; max-width: 1200px; margin: 0 auto;">
+
+    <!-- Hero -->
+    <div class="animate-fade-in" style="text-align: center; padding: 4.5rem 0 3.5rem;">
+      <div class="hero-badge">📚 Digital Library</div>
+      <h1 style="font-size: 3.5rem; margin: 1rem 0 0.75rem; letter-spacing: -0.05em; line-height: 1;">My Library</h1>
+      <p style="color: var(--text-secondary); max-width: 460px; margin: 0 auto; line-height: 1.8; font-size: 0.975rem;">
+        Technical ebooks on System Design, Algorithms, and more — built for engineers who want to go deep.
+      </p>
+    </div>
+
+    <!-- Books Grid -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 2rem; margin-top: 0; max-width: 860px; margin-left: auto; margin-right: auto;">
+      {books.map(book => (
+        <div class={`book-card ${book.status === 'coming-soon' ? 'coming-soon-card' : ''} animate-fade-in`}>
+          {/* Book Cover */}
+          <div class="book-cover" style={`background: ${book.gradient};`}>
+            <span class="book-emoji">{book.emoji}</span>
+            <div class="book-cover-spine" style={`background: ${book.accent};`} />
+            {book.status === 'coming-soon' && (
+              <div class="coming-soon-badge">Coming Soon</div>
+            )}
+          </div>
+
+          {/* Book Info */}
+          <div class="book-info">
+            <div>
+              <h2 class="book-title">{book.title}</h2>
+              <p class="book-subtitle">{book.subtitle}</p>
+              <p class="book-desc">{book.description}</p>
+            </div>
+            <div class="book-footer">
+              <span class="book-chapters" style={`color: ${book.accent};`}>
+                {book.status === 'coming-soon' ? 'Coming Soon' : `${book.chapters} chapter${book.chapters !== 1 ? 's' : ''}`}
+              </span>
+              {book.status === 'active' && book.slug ? (
+                <a href={`/books/${book.slug}`} class="btn read-btn" style={`background: ${book.gradient}; box-shadow: 0 4px 14px rgba(0,0,0,0.3);`}>
+                  Read Now →
+                </a>
+              ) : (
+                <span class="btn read-btn-disabled">Coming Soon</span>
+              )}
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</Layout>
+
+<style>
+  .book-card {
+    display: flex;
+    flex-direction: column;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid var(--surface-border);
+    background: var(--surface);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.15);
+  }
+  .book-card:hover {
+    transform: translateY(-8px);
+    border-color: var(--surface-border-hover);
+    box-shadow:
+      0 24px 50px rgba(0, 0, 0, 0.4),
+      0 0 0 1px var(--surface-border-hover),
+      0 0 50px -12px var(--primary);
+  }
+  .coming-soon-card {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+  .book-cover {
+    height: 210px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+  .book-cover::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 55%, rgba(0,0,0,0.3) 100%);
+    pointer-events: none;
+  }
+  .book-emoji {
+    font-size: 4.5rem;
+    filter: drop-shadow(0 6px 20px rgba(0,0,0,0.5));
+    z-index: 1;
+    transition: transform 0.3s ease;
+  }
+  .book-card:hover .book-emoji {
+    transform: scale(1.08);
+  }
+  .book-cover-spine {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 10px;
+    opacity: 0.85;
+    z-index: 2;
+  }
+  .coming-soon-badge {
+    position: absolute;
+    top: 0.9rem;
+    right: 0.9rem;
+    background: rgba(0,0,0,0.55);
+    color: rgba(255,255,255,0.85);
+    padding: 0.22rem 0.7rem;
+    border-radius: 999px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    border: 1px solid rgba(255,255,255,0.18);
+    z-index: 3;
+  }
+  .book-info {
+    flex: 1;
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .book-title {
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0 0 0.2rem;
+    color: var(--text-primary);
+    background: none;
+    -webkit-background-clip: unset;
+    background-clip: unset;
+    letter-spacing: -0.02em;
+  }
+  .book-subtitle {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    margin: 0 0 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    opacity: 0.7;
+  }
+  .book-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.65;
+  }
+  .book-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 1rem;
+    border-top: 1px solid var(--surface-border);
+  }
+  .book-chapters {
+    font-size: 0.8rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+  .read-btn {
+    padding: 0.48rem 1.2rem;
+    font-size: 0.82rem;
+    text-decoration: none;
+    border-radius: 999px;
+    color: white;
+    font-weight: 600;
+    display: inline-block;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .read-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.35);
+    color: white;
+  }
+  .read-btn-disabled {
+    padding: 0.48rem 1.2rem;
+    font-size: 0.82rem;
+    border-radius: 999px;
+    color: var(--text-muted);
+    font-weight: 600;
+    background: var(--surface-2, var(--surface));
+    border: 1px solid var(--surface-border);
+    cursor: default;
+  }
+</style>

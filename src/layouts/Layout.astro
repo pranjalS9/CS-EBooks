@@ -1,0 +1,52 @@
+---
+import '../styles/global.css';
+import ThemeToggle from '../components/ThemeToggle';
+
+interface Props {
+  title?: string;
+  description?: string;
+}
+const {
+  title = 'CS-EBooks',
+  description = 'CS-EBooks — ebooks on System Design, Algorithms, and more by Pranjal Sharma.'
+} = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="description" content={description} />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <script is:inline>
+      document.addEventListener('astro:page-load', () => {
+        // Set initial theme
+        const savedTheme = localStorage.getItem('theme') || 'dark';
+        document.documentElement.setAttribute('data-theme', savedTheme);
+
+        if (typeof mermaid !== 'undefined') {
+          const theme = savedTheme === 'light' ? 'default' : 'dark';
+          mermaid.initialize({ startOnLoad: true, theme: theme });
+        }
+      });
+    </script>
+  </head>
+  <body>
+    <nav class="glass app-nav">
+      <a href="/" class="nav-logo">
+        <span class="nav-logo-mark">◆</span>
+        CS-EBooks
+      </a>
+      <ThemeToggle client:only="react" />
+    </nav>
+    <main>
+      <slot />
+    </main>
+  </body>
+</html>
