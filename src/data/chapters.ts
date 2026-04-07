@@ -84,13 +84,12 @@ DATABASE      → Query Cache, Buffer Pool</code></pre>
       `
 <h2>The Trade-off Triangle</h2>
 <p>Every caching decision balances three forces. You can only optimise two at a time:</p>
-<pre><code>            SPEED
-             /\
-            /  \
-    Speed+ /    \ Speed+
-  Memory  /      \ Consistency
-          /--------\
-   CONSISTENCY   MEMORY</code></pre>
+<pre><code>          SPEED
+           /\\
+          /  \\
+         /    \\
+        /______\\
+  CONSISTENCY  MEMORY</code></pre>
 <ul>
   <li><strong>Speed + Memory</strong> → Consistency suffers (stale data risk)</li>
   <li><strong>Speed + Consistency</strong> → Memory suffers (larger cache needed)</li>
