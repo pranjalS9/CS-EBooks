@@ -1,8 +1,6 @@
 // OAuth initiation — redirects to GitHub's OAuth authorization page
-export default function handler(req, res) {
-  const { host } = req.headers;
-  const protocol = host.startsWith('localhost') ? 'http' : 'https';
-  const redirectUri = `${protocol}://${host}/api/callback`;
+export default function handler(_req, res) {
+  const redirectUri = 'https://ebook-library-rho.vercel.app/api/callback';
 
   const params = new URLSearchParams({
     client_id: process.env.GITHUB_CLIENT_ID,
