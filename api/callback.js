@@ -1,5 +1,4 @@
-// OAuth callback — exchanges GitHub code for access token, returns it to Decap CMS
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   const { code, error, error_description } = req.query;
 
   if (error) {
@@ -42,7 +41,7 @@ export default async function handler(req, res) {
     res.setHeader('Content-Type', 'text/html');
     res.send(makeScript('error', 'OAuth exchange failed'));
   }
-}
+};
 
 function makeScript(status, content) {
   const payload =
@@ -65,7 +64,6 @@ function makeScript(status, content) {
             window.opener.postMessage(message, '*');
             setTimeout(function() { window.close(); }, 500);
           } else {
-            // Fallback: try again shortly
             setTimeout(send, 200);
           }
         }
