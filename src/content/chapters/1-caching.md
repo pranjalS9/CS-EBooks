@@ -6,16 +6,7 @@ order: 1
 
 It is a process of storing **a copy of data in a faster, temporary storage layer** so that future requests for that data can be served faster without going back to the original, slower source.
 
-**The core problem caching solves**
-
-Every system has a speed mismatch between layers:
-
-CPU Operations: ~1 nanosecond\
-RAM Access: ~100 nanoseconds\
-SSD Read: ~100 microseconds\
-Network DB Query: ~10–100 milliseconds
-
-That means a DB query is 1,000,000x slower than CPU operations.<br>
+A DB query is 1,000,000x slower than CPU operations.<br>
 Caching solves this by absorbing the majority of reads before they reach the DB.
 
 ## Why Caching?
@@ -40,8 +31,6 @@ Caching solves this by absorbing the majority of reads before they reach the DB.
   * At scale: millions of $ saved in infrastructure
 
 ## What Data Should You Cache?
-
-Not everything deserves to be cached. Use this framework: <br>
 
 #### Good Candidates for Caching
 
@@ -98,10 +87,5 @@ cache entry ✅
                           back in cache ❌
 ```
 
-> *Cache and DB can never be perfectly in sync because they're updated non-atomically. The right strategy depends on consistency requirements. For eventual consistency, TTL-based expiry is sufficient. For stronger consistency, I'd use explicit invalidation with a distributed lock using Redis SETNX to prevent race conditions during concurrent reads and writes.*
-
-* FIXES:
-
-  * TTL          → eventual consistency, simplest
-  * Invalidation → reduces stale window
-  * Locks        → strong consistency, most complex
+> *Cache and DB can never be perfectly in sync because they're updated non-atomically. The right strategy depends on consistency requirements. For eventual consistency, TTL-based expiry is sufficient. For stronger consistency, I'd use explicit invalidation with a distributed lock using Redis SETNX to prevent race conditions during concurrent reads and writes.*\
+> Fixes: TTL, Invalidation, Locks
