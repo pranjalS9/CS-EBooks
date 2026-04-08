@@ -2,8 +2,8 @@ backend:
   name: github
   repo: pranjalS9/ebook-library
   branch: main
-  base_url: https://ebook-library-rho.vercel.app
-  auth_endpoint: /api/auth
+  auth_type: pkce
+  app_id: Ov23lilGcgB1gxn2S4Ny
 
 media_folder: public/images
 public_folder: /images
