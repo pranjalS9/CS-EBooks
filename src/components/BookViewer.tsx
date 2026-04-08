@@ -149,17 +149,48 @@ function calcPageSize() {
 }
 
 // Split chapter content into multiple pages based on content height
+function measureHTML(html: string, contentWidth: number): number {
+  const div = document.createElement('div');
+  div.className = 'page-content';
+  div.style.width = `${contentWidth}px`;
+  div.style.padding = '0';
+  div.style.height = 'auto';
+  div.style.overflow = 'visible';
+  div.style.position = 'absolute';
+  div.style.left = '-9999px';
+  div.style.top = '0';
+  div.innerHTML = html;
+  document.body.appendChild(div);
+  const h = div.offsetHeight;
+  document.body.removeChild(div);
+  return h;
+}
+
+// Collect the atomic units to paginate: for ul/ol, yield each <li> individually
+// wrapped in the parent tag so margins/styles are preserved.
+function* extractUnits(nodes: ChildNode[]): Generator<{ html: string }> {
+  for (const node of nodes) {
+    if (node.nodeType !== Node.ELEMENT_NODE) continue;
+    const elem = node as HTMLElement;
+    const tag = elem.tagName.toLowerCase();
+    if (tag === 'ul' || tag === 'ol') {
+      for (const child of Array.from(elem.children)) {
+        yield { html: `<${tag}>${child.outerHTML}</${tag}>` };
+      }
+    } else {
+      yield { html: elem.outerHTML };
+    }
+  }
+}
+
 function splitChapterIntoPages(content: string, maxHeight: number, pageWidth: number): string[] {
-  // Match actual .page-content horizontal padding: 1.75rem * 2 ≈ 56px
-  const HORIZ_PADDING = 56;
-  // Account for .page-content vertical padding (2rem top + 3rem bottom) + page-number-bar
-  const VERT_OVERHEAD = 110;
+  const HORIZ_PADDING = 56; // 1.75rem * 2
+  const VERT_OVERHEAD = 110; // top+bottom padding + page-number-bar
   const contentWidth = Math.max(pageWidth - HORIZ_PADDING, 200);
   const effectiveMaxHeight = maxHeight - VERT_OVERHEAD;
 
   const tempDiv = document.createElement('div');
   tempDiv.innerHTML = content;
-  // Use page-content class so child element styles (font-size, margins) match reality
   tempDiv.className = 'page-content';
   tempDiv.style.width = `${contentWidth}px`;
   tempDiv.style.padding = '0';
@@ -175,45 +206,24 @@ function splitChapterIntoPages(content: string, maxHeight: number, pageWidth: nu
   let currentPageContent = '';
   let currentPageHeight = 0;
 
-  const nodes = Array.from(tempDiv.childNodes);
+  for (const unit of extractUnits(Array.from(tempDiv.childNodes))) {
+    const unitHeight = measureHTML(unit.html, contentWidth);
 
-  for (const node of nodes) {
-    if (node.nodeType === Node.ELEMENT_NODE) {
-      const elem = node as HTMLElement;
-
-      const testDiv = document.createElement('div');
-      testDiv.className = 'page-content';
-      testDiv.style.width = `${contentWidth}px`;
-      testDiv.style.padding = '0';
-      testDiv.style.height = 'auto';
-      testDiv.style.overflow = 'visible';
-      testDiv.style.position = 'absolute';
-      testDiv.style.left = '-9999px';
-      testDiv.style.top = '0';
-      testDiv.innerHTML = elem.outerHTML;
-      document.body.appendChild(testDiv);
-
-      const elemHeight = testDiv.offsetHeight;
-      document.body.removeChild(testDiv);
-
-      if (currentPageHeight + elemHeight <= effectiveMaxHeight) {
-        currentPageContent += elem.outerHTML;
-        currentPageHeight += elemHeight;
-      } else if (currentPageHeight > 0) {
-        pages.push(currentPageContent);
-        currentPageContent = elem.outerHTML;
-        currentPageHeight = elemHeight;
-      } else {
-        // Element taller than a full page — add it anyway to avoid infinite loop
-        currentPageContent += elem.outerHTML;
-        currentPageHeight += elemHeight;
-      }
+    if (currentPageHeight + unitHeight <= effectiveMaxHeight) {
+      currentPageContent += unit.html;
+      currentPageHeight += unitHeight;
+    } else if (currentPageHeight > 0) {
+      pages.push(currentPageContent);
+      currentPageContent = unit.html;
+      currentPageHeight = unitHeight;
+    } else {
+      // Single unit taller than a full page — add anyway to avoid infinite loop
+      currentPageContent += unit.html;
+      currentPageHeight += unitHeight;
     }
   }
 
-  if (currentPageContent) {
-    pages.push(currentPageContent);
-  }
+  if (currentPageContent) pages.push(currentPageContent);
 
   document.body.removeChild(tempDiv);
 
