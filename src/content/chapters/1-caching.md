@@ -45,10 +45,6 @@ Caching solves this by absorbing the majority of reads before they reach the DB.
 * Rarely accessed                     → Historical audit logs
 * Very large objects                  → Video files (use CDN instead)
 
-### The Golden Rule
-
-Cache data that is read often, written rarely, and tolerable to be slightly stale.
-
 ## The Cache Trade-off Triangle
 
 ```markdown
