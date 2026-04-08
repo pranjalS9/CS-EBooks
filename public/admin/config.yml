@@ -2,8 +2,7 @@ backend:
   name: github
   repo: pranjalS9/ebook-library
   branch: main
-  auth_type: pkce
-  app_id: Ov23lilGcgB1gxn2S4Ny
+  base_url: https://auth.sveltia-cms.com
 
 media_folder: public/images
 public_folder: /images
