@@ -2,8 +2,6 @@
 title: Caching
 order: 1
 ---
-![]()
-
 ## What is Caching?
 
 It is a process of storing **a copy of data in a faster, temporary storage layer** so that future requests for that data can be served faster without going back to the original, slower source.
@@ -42,10 +40,6 @@ Caching solves this by absorbing the majority of reads before they reach the DB.
   * DB read   = expensive (compute + I/O + licensing)
   * Cache hit = cheap     (pure memory read)
   * At scale: millions of $ saved in infrastructure
-
-## Where is caching used?
-
-Every Layer: `Client -> CDN -> LB -> App -> Cache -> DB`
 
 ## What Data Should You Cache?
 
@@ -107,7 +101,7 @@ cache entry ✅
                           back in cache ❌
 ```
 
-> Cache and DB can never be perfectly in sync because they're updated non-atomically. The right strategy depends on consistency requirements. For eventual consistency, TTL-based expiry is sufficient. For stronger consistency, I'd use explicit invalidation with a distributed lock using Redis SETNX to prevent race conditions during concurrent reads and writes.
+>*Cache and DB can never be perfectly in sync because they're updated non-atomically. The right strategy depends on consistency requirements. For eventual consistency, TTL-based expiry is sufficient. For stronger consistency, I'd use explicit invalidation with a distributed lock using Redis SETNX to prevent race conditions during concurrent reads and writes.*
 
 * FIXES:
 
