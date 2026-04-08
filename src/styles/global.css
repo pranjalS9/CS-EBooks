@@ -394,6 +394,10 @@ button {
   line-height: 1.3;
 }
 
+.page-content hr {
+  display: none;
+}
+
 .page-content img {
   max-width: 100%;
   border-radius: 6px;
