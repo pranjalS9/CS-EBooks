@@ -2,6 +2,8 @@
 title: Caching
 order: 1
 ---
+![]()
+
 ## What is Caching?
 
 It is a process of storing **a copy of data in a faster, temporary storage layer** so that future requests for that data can be served faster without going back to the original, slower source.
@@ -43,16 +45,7 @@ Caching solves this by absorbing the majority of reads before they reach the DB.
 
 ## Where is caching used?
 
-Every Layer
-
-* Client: Browser Cache, Local Storage
-* CDN: Edge Cache (Cloudflare, Akamai)
-* LB: Connection Pooling
-* Application: Application Server (In-process Cache (Guava, Caffeine))
-* Cache: Distributed Cache (Redis, Memcached)
-* DB: Query Cache, Buffer Pool
-
-`Client -> CDN -> LB -> App -> Cache -> DB`
+Every Layer: `Client -> CDN -> LB -> App -> Cache -> DB`
 
 ## What Data Should You Cache?
 
@@ -87,10 +80,8 @@ Every caching decision involves balancing three things:
                    /\
                   /  \
                  /    \
-                /      \
-               /        \
-              /__________\
-        CONSISTENCY     MEMORY
+                /______\
+        CONSISTENCY    MEMORY
 
 You can optimize for 2, but the 3rd suffers.
 ```
