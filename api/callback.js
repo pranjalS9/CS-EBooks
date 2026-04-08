@@ -1,7 +1,9 @@
 export default async function handler(req, res) {
-  const code = req.query?.code;
-  const error = req.query?.error;
-  const errorDescription = req.query?.error_description;
+  const qs = (req.url || '').split('?')[1] || '';
+  const params = new URLSearchParams(qs);
+  const code = params.get('code');
+  const error = params.get('error');
+  const errorDescription = params.get('error_description');
 
   if (error) {
     res.writeHead(302, { Location: `/admin/relay.html#error=${encodeURIComponent(errorDescription || error)}` });
