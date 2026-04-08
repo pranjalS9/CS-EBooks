@@ -344,7 +344,22 @@ export default function BookViewer({ chapters }: { chapters: Chapter[] }) {
             overflow: 'hidden',
             width: isOnCover ? pageSize.width : pageSize.width * 2,
             flexShrink: 0,
+            position: 'relative',
           }}>
+            {/* Spine line between left and right pages */}
+            {!isOnCover && (
+              <div style={{
+                position: 'absolute',
+                left: '50%',
+                top: 0,
+                width: '2px',
+                height: '100%',
+                background: 'linear-gradient(to bottom, transparent 0%, rgba(0,0,0,0.13) 8%, rgba(0,0,0,0.13) 92%, transparent 100%)',
+                transform: 'translateX(-50%)',
+                zIndex: 10,
+                pointerEvents: 'none',
+              }} />
+            )}
             <div style={{
               transform: isOnCover ? `translateX(-${pageSize.width}px)` : 'none',
             }}>
