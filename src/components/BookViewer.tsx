@@ -382,7 +382,7 @@ export default function BookViewer({ chapters }: { chapters: Chapter[] }) {
             </div>
             <div className="cover-bottom">
               <div className="cover-divider" />
-              <p className="cover-author">CS-EBooks · Pranjal Sharma</p>
+              <p className="cover-author">EBook Library · Pranjal Sharma</p>
             </div>
           </div>
         </div>
@@ -469,7 +469,7 @@ export default function BookViewer({ chapters }: { chapters: Chapter[] }) {
                 The End
               </p>
               <p style={{ color: 'rgba(255,255,255,0.18)', fontSize: '0.55rem', letterSpacing: '0.12em', textTransform: 'uppercase', margin: 0 }}>
-                CS-EBooks
+                EBook Library
               </p>
             </div>
           </div>

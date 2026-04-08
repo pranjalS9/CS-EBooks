@@ -1,10 +1,31 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import BookViewer from '../../components/BookViewer';
-import { chapters } from '../../data/chapters';
+import { getCollection, render } from 'astro:content';
+
+const rawChapters = await getCollection('chapters');
+const chapters = await Promise.all(
+  rawChapters
+    .sort((a, b) => a.data.order - b.data.order)
+    .map(async (entry) => {
+      const { remarkPluginFrontmatter } = await render(entry);
+      // compiledContent() is not available in new content layer;
+      // use entry.body and split on <!--page--> markers
+      const pages = (entry.body ?? '')
+        .split(/<!--page-->/i)
+        .map((p: string) => p.trim())
+        .filter(Boolean);
+      return {
+        id: entry.id,
+        title: entry.data.title,
+        order: entry.data.order,
+        content: pages.length > 1 ? pages : (pages[0] ?? ''),
+      };
+    })
+);
 ---
 
-<Layout title="System Design — CS-EBooks" description="Read the System Design EBook covering core concepts.">
+<Layout title="System Design — EBook Library" description="Read the System Design EBook covering core concepts.">
   <div style="padding: 0.75rem 1rem 0;">
 
     <!-- Breadcrumb -->
@@ -13,8 +34,6 @@ import { chapters } from '../../data/chapters';
       <span>›</span>
       <span style="color: var(--text-primary); font-weight: 600;">System Design</span>
     </div>
-
-    
 
     <!-- Book Viewer -->
     <BookViewer client:only="react" chapters={chapters} />

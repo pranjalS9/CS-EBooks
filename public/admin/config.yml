@@ -1,0 +1,24 @@
+backend:
+  name: github
+  repo: pranjalS9/ebook-library
+  branch: main
+  base_url: https://ebook-library-rho.vercel.app
+  auth_endpoint: /api/auth
+
+media_folder: public/images
+public_folder: /images
+
+collections:
+  - name: chapters
+    label: Chapters
+    folder: src/content/chapters
+    create: true
+    delete: true
+    slug: "{{order}}-{{slug}}"
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Order, name: order, widget: number, value_type: int, min: 1 }
+      - label: Content
+        name: body
+        widget: markdown
+        hint: "Separate pages with <!--page--> on its own line. You can use raw HTML for callouts, tables, and code blocks."
