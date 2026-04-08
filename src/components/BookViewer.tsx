@@ -163,6 +163,8 @@ function splitChapterIntoPages(content: string, maxHeight: number, pageWidth: nu
   tempDiv.className = 'page-content';
   tempDiv.style.width = `${contentWidth}px`;
   tempDiv.style.padding = '0';
+  tempDiv.style.height = 'auto';
+  tempDiv.style.overflow = 'visible';
   tempDiv.style.position = 'absolute';
   tempDiv.style.left = '-9999px';
   tempDiv.style.top = '0';
@@ -183,6 +185,8 @@ function splitChapterIntoPages(content: string, maxHeight: number, pageWidth: nu
       testDiv.className = 'page-content';
       testDiv.style.width = `${contentWidth}px`;
       testDiv.style.padding = '0';
+      testDiv.style.height = 'auto';
+      testDiv.style.overflow = 'visible';
       testDiv.style.position = 'absolute';
       testDiv.style.left = '-9999px';
       testDiv.style.top = '0';
