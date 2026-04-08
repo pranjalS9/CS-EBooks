@@ -9,7 +9,9 @@ export default function handler(req, res) {
       return;
     }
 
-    const redirectUri = 'https://ebook-library-rho.vercel.app/api/callback';
+    const protocol = req.headers['x-forwarded-proto'] || 'https';
+    const host = req.headers.host || 'ebook-library-rho.vercel.app';
+    const redirectUri = `${protocol}://${host}/api/callback`;
     const state = Math.random().toString(36).slice(2);
 
     const url =

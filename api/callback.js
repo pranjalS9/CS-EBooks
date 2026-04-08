@@ -18,6 +18,10 @@ export default async function handler(req, res) {
   }
 
   try {
+    const protocol = req.headers['x-forwarded-proto'] || 'https';
+    const host = req.headers.host || 'ebook-library-rho.vercel.app';
+    const redirectUri = `${protocol}://${host}/api/callback`;
+
     const response = await fetch('https://github.com/login/oauth/access_token', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
@@ -25,6 +29,7 @@ export default async function handler(req, res) {
         client_id: process.env.GITHUB_CLIENT_ID,
         client_secret: process.env.GITHUB_CLIENT_SECRET,
         code,
+        redirect_uri: redirectUri,
       }),
     });
 
