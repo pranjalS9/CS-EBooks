@@ -1,25 +1,27 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import BookViewer from '../../components/BookViewer';
-import { getCollection, render } from 'astro:content';
+import { getCollection } from 'astro:content';
+import { marked } from 'marked';
 
 const rawChapters = await getCollection('chapters');
 const chapters = await Promise.all(
   rawChapters
     .sort((a, b) => a.data.order - b.data.order)
     .map(async (entry) => {
-      const { remarkPluginFrontmatter } = await render(entry);
-      // compiledContent() is not available in new content layer;
-      // use entry.body and split on <!--page--> markers
-      const pages = (entry.body ?? '')
+      // Split raw markdown on <!--page--> markers first, then render each page to HTML
+      const rawPages = (entry.body ?? '')
         .split(/<!--page-->/i)
         .map((p: string) => p.trim())
         .filter(Boolean);
+
+      const htmlPages = await Promise.all(rawPages.map((p: string) => marked.parse(p)));
+
       return {
         id: entry.id,
         title: entry.data.title,
         order: entry.data.order,
-        content: pages.length > 1 ? pages : (pages[0] ?? ''),
+        content: htmlPages.length > 1 ? htmlPages : (htmlPages[0] ?? ''),
       };
     })
 );
