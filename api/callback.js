@@ -6,7 +6,7 @@ export default async function handler(req, res) {
   res.statusCode = 200;
 
   if (error || !code) {
-    res.end(html('error', JSON.stringify({ error: error || 'missing_code' })));
+    res.end(errorPage(error || 'missing_code'));
     return;
   }
 
@@ -24,32 +24,53 @@ export default async function handler(req, res) {
     const data = await response.json();
 
     if (data.error || !data.access_token) {
-      res.end(html('error', JSON.stringify({ error: data.error_description || data.error || 'no_token' })));
+      res.end(errorPage(data.error_description || data.error || 'no_token'));
       return;
     }
 
-    res.end(html('success', JSON.stringify({ token: data.access_token, provider: 'github' })));
+    res.end(successPage(data.access_token));
   } catch (err) {
-    res.end(html('error', JSON.stringify({ error: String(err) })));
+    res.end(errorPage(String(err)));
   }
 }
 
-function html(status, payload) {
-  const msg = `authorization:github:${status}:${payload}`;
+function successPage(token) {
+  // Decap CMS two-way handshake:
+  // 1. Popup sends "authorizing:github" to opener
+  // 2. CMS sends back a message to the popup
+  // 3. Popup responds with the token using event.origin as target
   return `<!DOCTYPE html><html><body><script>
-  (function() {
-    var msg = ${JSON.stringify(msg)};
-    function attempt(n) {
-      if (window.opener) {
-        window.opener.postMessage(msg, '*');
-        setTimeout(function(){ window.close(); }, 500);
-      } else if (n < 10) {
-        setTimeout(function(){ attempt(n+1); }, 300);
-      } else {
-        document.body.innerHTML = '<p>Close this window and try again. Make sure popups are allowed.</p>';
-      }
+(function() {
+  var token = ${JSON.stringify(token)};
+  var provider = 'github';
+
+  function sendToken(origin) {
+    var msg = 'authorization:' + provider + ':success:' + JSON.stringify({ token: token, provider: provider });
+    window.opener.postMessage(msg, origin);
+  }
+
+  // Step 1: wait for CMS to ping us
+  window.addEventListener('message', function(e) {
+    if (e.data === 'authorizing:' + provider) {
+      sendToken(e.origin);
+      window.close();
     }
-    attempt(0);
-  })();
-  </script></body></html>`;
+  });
+
+  // Step 2: signal opener we are ready
+  window.opener.postMessage('authorizing:' + provider, '*');
+})();
+</script></body></html>`;
+}
+
+function errorPage(msg) {
+  return `<!DOCTYPE html><html><body><script>
+(function() {
+  window.addEventListener('message', function(e) {
+    window.opener.postMessage('authorization:github:error:' + JSON.stringify({ error: ${JSON.stringify(msg)} }), e.origin);
+    window.close();
+  });
+  window.opener.postMessage('authorizing:github', '*');
+})();
+</script></body></html>`;
 }

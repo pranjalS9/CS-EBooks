@@ -2,7 +2,8 @@ backend:
   name: github
   repo: pranjalS9/ebook-library
   branch: main
-  base_url: https://auth.sveltia-cms.com
+  base_url: https://ebook-library-rho.vercel.app
+  auth_endpoint: /api/auth
 
 media_folder: public/images
 public_folder: /images
@@ -20,4 +21,4 @@ collections:
       - label: Content
         name: body
         widget: markdown
-        hint: "Separate pages with <!--page--> on its own line. You can use raw HTML for callouts, tables, and code blocks."
+        hint: "Separate pages with <!--page--> on its own line."
